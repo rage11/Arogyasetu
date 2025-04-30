@@ -1,0 +1,94 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: gilroy;
+}
+body, html{
+    height: 100%;
+    width: 100%;
+    background-color: #DADD98;
+}
+
+nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 50px;
+    border-bottom: 5px solid ;
+    color: #014421;
+}
+.left-side{
+    display: flex;
+    align-items: center;
+    gap: 5vw;
+}
+.left-side h1{
+    font-size: 3vw;
+}
+.services{
+    display: flex;
+    gap: 2vw;
+}
+.services a{
+    text-decoration: none;
+    color: #014421;
+    font-size: 1.4vw;
+}
+
+.profile i{
+    font-size: 3vw;
+    cursor: pointer;
+}
+
+.map-location{
+    width: 100vw;
+    display: flex;
+}
+.location{
+    width: 40%;
+    height: 80vh;
+    padding: 50px;
+}
+.location .box{
+    height: 80%;
+    width: 100%;
+    border-radius: 10px;
+    border: 2px solid #00693E;
+    display: flex;
+    flex-direction: column;
+    gap: 3vh;
+    padding: 20px;
+    background-color: white;
+}
+.location .box input{
+    border-radius: 10px;
+    border: 1px solid #00693E;
+    padding: 1vh 3vw;
+}
+.location .box select{
+    width: 30%;
+    padding: 1.2vh;
+    border-radius: 50px;
+}
+.location .box button{
+    border-radius: 50px;
+    border: none;
+    padding: 2vh;
+    background-color: #00693E;
+    color: white;
+    cursor: pointer;
+}
+.map-location .mapContainer{
+    width: 60vw;
+    height: 75vh;
+    margin-top: 4vh;
+}
+.mapContainer #map{
+    height: 100%;
+    width: 95%;
+}
+.location .box button:active{
+    scale: 0.9;
+    
+}

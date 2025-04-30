@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4f3; /* Light olive background */
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff; /* White background for the main container */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #c0c5c2; /* Olive-toned border */
+        }
+
+        h1 {
+            text-align: center;
+            color: #3b5323; /* Dark olive color */
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .doctor-list, .animal-doctor-list {
+            background: #f4f9f4; /* Very light olive */
+            border: 1px solid #c8e6c9; /* Soft olive border */
+            border-radius: 4px;
+            padding: 15px;
+        }
+
+        .doctor-list h3, .animal-doctor-list h3 {
+            margin-top: 0;
+            color: #3b5323; /* Dark olive for headers */
+        }
+
+        .doctor-item, .animal-doctor-item {
+            cursor: pointer;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff; /* White background for doctor items */
+            color: #3b5323; /* Dark olive color for text */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .doctor-item:hover, .animal-doctor-item:hover {
+            background-color: #dfe6df; /* Lighter olive when hovered */
+            color: #fff; /* White text on hover */
+        }
+
+        .schedule {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #3b5323; /* Dark olive for labels */
+        }
+
+        input[type="text"], input[type="datetime-local"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #6c8e23; /* Olive color */
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #5a7a1d; /* Darker olive color */
+        }
+
+        .confirmation-message {
+            display: none;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #e6f4e3; /* Light olive for confirmation background */
+            color: #3b5323; /* Dark olive for text */
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Appointment Scheduler</h1>
+        
+        <!-- Doctor List -->
+        <div class="section doctor-list">
+            <h3>Human Doctors</h3>
+            <div class="doctor-item" data-doc="rajesh-kumar">
+                Dr. Rajesh Kumar - Cardiologist
+            </div>
+            <div class="doctor-item" data-doc="arun-patel">
+                Dr. Arun Patel - Neurologist
+            </div>
+            <div class="doctor-item" data-doc="sanjay-gupta">
+                Dr. Sanjay Gupta - Orthopedic
+            </div>
+            <div class="doctor-item" data-doc="vikram-singh">
+                Dr. Vikram Singh - Dermatologist
+            </div>
+            <div class="doctor-item" data-doc="ravi-sharma">
+                Dr. Ravi Sharma - Pediatrician
+            </div>
+        </div>
+
+        <!-- Animal Doctor List -->
+        <div class="section animal-doctor-list">
+            <h3>Animal Doctors</h3>
+            <div class="animal-doctor-item" data-doc="ananya-rao">
+                Dr. Ananya Rao - Veterinary Surgeon
+            </div>
+            <div class="animal-doctor-item" data-doc="priya-sharma">
+                Dr. Priya Sharma - Veterinary Internal Medicine
+            </div>
+        </div>
+
+        <!-- Schedule Display -->
+        <div id="schedule" class="schedule">
+            <h3>Available Timings</h3>
+            <div id="doctor-details"></div>
+        </div>
+
+        <!-- Appointment Form -->
+        <form id="appointment-form">
+            <fieldset>
+                <legend>Book an Appointment</legend>
+                <div class="form-group">
+                    <label for="doc-select">Select Doctor:</label>
+                    <select id="doc-select" name="doc-select" required>
+                        <option value="">Select a Doctor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="appointment-date">Date and Time:</label>
+                    <input type="datetime-local" id="appointment-date" name="appointment-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="appointment-reason">Reason for Visit:</label>
+                    <input type="text" id="appointment-reason" name="appointment-reason" required>
+                </div>
+                <input type="submit" value="Schedule Appointment">
+            </fieldset>
+            <div class="confirmation-message" id="confirmation-message">
+                Your appointment has been scheduled successfully!
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const humanDoctors = {
+            'rajesh-kumar': {
+                name: 'Dr. Rajesh Kumar',
+                specialization: 'Cardiologist',
+                degree: 'MD, FACC',
+                timings: 'Mon-Fri, 9 AM - 5 PM'
+            },
+            'arun-patel': {
+                name: 'Dr. Arun Patel',
+                specialization: 'Neurologist',
+                degree: 'MD, DM (Neurology)',
+                timings: 'Mon-Fri, 10 AM - 6 PM'
+            },
+            'sanjay-gupta': {
+                name: 'Dr. Sanjay Gupta',
+                specialization: 'Orthopedic',
+                degree: 'MS (Orthopedics)',
+                timings: 'Mon-Fri, 11 AM - 4 PM'
+            },
+            'vikram-singh': {
+                name: 'Dr. Vikram Singh',
+                specialization: 'Dermatologist',
+                degree: 'MD (Dermatology)',
+                timings: 'Tue-Sat, 9 AM - 3 PM'
+            },
+            'ravi-sharma': {
+                name: 'Dr. Ravi Sharma',
+                specialization: 'Pediatrician',
+                degree: 'MD (Pediatrics)',
+                timings: 'Mon-Fri, 8 AM - 2 PM'
+            }
+        };
+
+        const animalDoctors = {
+            'ananya-rao': {
+                name: 'Dr. Ananya Rao',
+                specialization: 'Veterinary Surgeon',
+                degree: 'DVM, ABVP',
+                timings: 'Mon-Sat, 10 AM - 4 PM'
+            },
+            'priya-sharma': {
+                name: 'Dr. Priya Sharma',
+                specialization: 'Veterinary Internal Medicine',
+                degree: 'DVM, ACVIM',
+                timings: 'Tue-Sun, 11 AM - 5 PM'
+            }
+        };
+
+        function updateDoctorSelectOptions() {
+            const docSelect = document.getElementById('doc-select');
+            docSelect.innerHTML = '<option value="">Select a Doctor</option>'; // Reset options
+            Object.keys(humanDoctors).forEach(key => {
+                const doctor = humanDoctors[key];
+                docSelect.innerHTML += `<option value="${key}">${doctor.name} - ${doctor.specialization}</option>`;
+            });
+            Object.keys(animalDoctors).forEach(key => {
+                const doctor = animalDoctors[key];
+                docSelect.innerHTML += `<option value="${key}">${doctor.name} - ${doctor.specialization}</option>`;
+            });
+        }
+
+        function showDoctorSchedule(doctorKey) {
+            const doctor = humanDoctors[doctorKey] || animalDoctors[doctorKey];
+            if (doctor) {
+                const scheduleDiv = document.getElementById('schedule');
+                const detailsDiv = document.getElementById('doctor-details');
+                detailsDiv.innerHTML = `
+                    <p><strong>Name:</strong> ${doctor.name}</p>
+                    <p><strong>Specialization:</strong> ${doctor.specialization}</p>
+                    <p><strong>Degree:</strong> ${doctor.degree}</p>
+                    <p><strong>Available Timings:</strong> ${doctor.timings}</p>
+                `;
+                scheduleDiv.style.display = 'block';
+            }
+        }
+
+        document.querySelectorAll('.doctor-item, .animal-doctor-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const doctorKey = item.getAttribute('data-doc');
+                showDoctorSchedule(doctorKey);
+            });
+        });
+
+        document.getElementById('appointment-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            document.getElementById('confirmation-message').style.display = 'block';
+        });
+
+        // Initialize the dropdown options when the page loads
+        document.addEventListener('DOMContentLoaded', updateDoctorSelectOptions);
+    </script>
+</body>
+</html>
